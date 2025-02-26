@@ -1,10 +1,11 @@
 const fs = require("fs");
 const path = require("path");
-const readline = require("readline");
+const readline = require("node:readline");
+const process = require("node:process")
 
 const filePath = "./newsDatabase.json";
 
-const rl = readline.createInterface({
+let rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout,
 });
@@ -39,12 +40,12 @@ function displayNews() {
       result += "ID: " + objnews[i].id + " - " + objnews[i].title + "\n";
     }
     
-    return result;
-    
+    console.log(result)
+    rl.close()
   }
   catch(err){
     console.error("No news articles available", err);
-    return[]
+    return[];
   }
 }
 
@@ -53,16 +54,27 @@ function displayNews() {
 // Title: Title of the news article
 // Content: Content of the news article
 function displayNewsById() {
-  const data = fs.readFileSync(filePath, "utf8")
-  const objnews = JSON.parse(data)
-  const r1 = readline.createInterface({ input, output });
-  r1.question("What news do you want to see?", (answer) => {
-    return "Title: " + objnews[answer].title + "\n" + "Content: " + objnews[answer].content;
+  try{
+  const data = fs.readFileSync(filePath, "utf8");
+  const objnews = JSON.parse(data);
   
+  rl.question("What news do you want to see?", (id) => {
+    const id1 = parseInt(id)
+    if (objnews[id1]) {
+      console.log("Title: " + objnews[id1].title + "\n" + "Content: " + objnews[id1].content);
+    } else {
+      console.error("No article found with that id!");
+    }
+    rl.close()
   })
-  r1.close()
+  
 }
+  catch(err){
+    console.error("No article find with that id", err);
+    return[];
+  }
 
+}
 // Add a new news article to the list of news articles. The user should be prompted to enter the title and content of the news article.
 // The new article should have an ID that is one greater than the ID of the last article in the list.
 // After adding the news article, save the updated list of news articles to the JSON file and display a message saying "News article added."
@@ -83,5 +95,5 @@ function promptUser() {}
 function startApp() {}
 
 startApp();
-
-console.log(displayNewsById())
+displayNews()
+console.log()
