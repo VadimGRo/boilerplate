@@ -78,13 +78,32 @@ function displayNewsById() {
 // Add a new news article to the list of news articles. The user should be prompted to enter the title and content of the news article.
 // The new article should have an ID that is one greater than the ID of the last article in the list.
 // After adding the news article, save the updated list of news articles to the JSON file and display a message saying "News article added."
-function addNews() {}
+function addNews() {
+  const data = fs.readFileSync(filePath, "utf8");
+  const objnews = JSON.parse(data);
+  rl.question("What title of your news?", (title1) => {
+  rl.question("What content of your news?", (content1) => {
+  const newObject = {
+    "id": objnews.length + 1,
+    "title": title1,
+    "content": content1
+  };
+  objnews.push(newObject)
+  saveNews(objnews);
+  console.log("News article added.");
+  
+  rl.close();
+});
+  });
+}
 
 // Remove a news article from the list of news articles. The user should be prompted to enter the ID of the news article to remove.
 // If the news article with the specified ID is found, remove it from the list of news articles.
 // After removing the news article, save the updated list of news articles to the JSON file and display a message saying "News article removed."
 // If no news article is found with the specified ID, display a message saying "No article found with that ID."
-function removeNews() {}
+function removeNews() {
+
+}
 
 // Prompt the user for an action to perform. The user should be able to view the news articles, add a new news article, remove a news article, or exit the application.
 // After performing the selected action, the user should be prompted again for the next action to perform.
@@ -94,6 +113,5 @@ function promptUser() {}
 // Start the application
 function startApp() {}
 
-startApp();
-displayNews()
+removeNews()
 console.log()
