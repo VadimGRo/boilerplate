@@ -102,7 +102,14 @@ function addNews() {
 // After removing the news article, save the updated list of news articles to the JSON file and display a message saying "News article removed."
 // If no news article is found with the specified ID, display a message saying "No article found with that ID."
 function removeNews() {
-
+  const data = fs.readFileSync(filePath, "utf8");
+  const objnews = JSON.parse(data);
+  rl.question("What news do you want to remove? ID: ", (id) => {
+    const id1 = id - 1
+    objnews.splice(id1, 1);
+    saveNews(objnews);
+    rl.close()
+  })
 }
 
 // Prompt the user for an action to perform. The user should be able to view the news articles, add a new news article, remove a news article, or exit the application.
