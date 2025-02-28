@@ -32,8 +32,7 @@ function saveNews(news) {
 // ID: 1 - Title of the news article
 // ID: 2 - Title of the news article
 function displayNews() {
-  try{
-    let result = ""
+    let result = "";
     const data = fs.readFileSync(filePath, "utf8")
     const objnews = JSON.parse(data)
     for (let i = 0; i < objnews.length; i++) {
@@ -41,12 +40,23 @@ function displayNews() {
     }
     
     console.log(result)
-    rl.close()
-  }
-  catch(err){
-    console.error("No news articles available", err);
-    return[];
-  }
+    rl.question(" 1 - Back to menu \n 2 - Continue here \n 3 - Exit \n Action: ", (answer) => {
+      switch(answer){
+        case "1":
+          promptUser();
+          break;
+        case "2":
+          displayNews();
+          break;
+        case "3":
+          rl.close();
+          break;
+        default:
+          console.log("Invalid option. Try again.");
+          promptUser();
+      }})
+ 
+
 }
 
 // Display the content of a news article with the specified ID. If a news article with the specified ID is not found, display a message saying "No article found with that ID."
@@ -54,7 +64,7 @@ function displayNews() {
 // Title: Title of the news article
 // Content: Content of the news article
 function displayNewsById() {
-  try{
+ 
   const data = fs.readFileSync(filePath, "utf8");
   const objnews = JSON.parse(data);
   
@@ -65,14 +75,25 @@ function displayNewsById() {
     } else {
       console.error("No article found with that id!");
     }
-    rl.close()
+    
   })
+  rl.question(" 1 - Back to menu \n 2 - Continue here \n 3 - Exit \n Action: ", (answer) => {
+    switch(answer){
+      case "1":
+        promptUser();
+        break;
+      case "2":
+        displayNewsById();
+        break;
+      case "3":
+        rl.close();
+        break;
+      default:
+        console.log("Invalid option. Try again.");
+        promptUser();
+    }})
   
-}
-  catch(err){
-    console.error("No article find with that id", err);
-    return[];
-  }
+
 
 }
 // Add a new news article to the list of news articles. The user should be prompted to enter the title and content of the news article.
@@ -92,9 +113,26 @@ function addNews() {
   saveNews(objnews);
   console.log("News article added.");
   
-  rl.close();
+  
 });
+  
   });
+  rl.question(" 1 - Back to menu \n 2 - Continue here \n 3 - Exit \n Action:", (answer) => {
+    switch(answer){
+      case "1":
+        promptUser();
+        break;
+      case "2":
+        addNews();
+        break;
+      case "3":
+        rl.close();
+        break;
+      default:
+        console.log("Invalid option. Try again.");
+        promptUser();
+    }
+})
 }
 
 // Remove a news article from the list of news articles. The user should be prompted to enter the ID of the news article to remove.
@@ -108,17 +146,64 @@ function removeNews() {
     const id1 = id - 1
     objnews.splice(id1, 1);
     saveNews(objnews);
-    rl.close()
+    
   })
+  rl.question(" 1 - Back to menu \n 2 - Continue here \n 3 - Exit \n Action: ", (answer) => {
+    switch(answer){
+      case "1":
+        promptUser();
+        break;
+      case "2":
+        removeNews();
+        break;
+      case "3":
+        rl.close();
+        break;
+      default:
+        console.log("Invalid option. Try again.");
+        promptUser();
+    }
+  }
+  )
 }
 
 // Prompt the user for an action to perform. The user should be able to view the news articles, add a new news article, remove a news article, or exit the application.
 // After performing the selected action, the user should be prompted again for the next action to perform.
 // The application should continue running until the user chooses to exit.
-function promptUser() {}
+function promptUser() {
+  rl.question("What do you want to do? \n 1 - View the all news article \n 2 - View news by ID \n 3 - Add a new news article \n 4 - Remove a news article \n 5 - exit \n Action: ", (answer) => {
+    switch (answer){
+      case "1":
+        displayNews();
+        promptUser();
+        break;
+      case "2":
+        displayNewsById;
+        promptUser();
+        break;
+      case "3":
+        addNews();
+        promptUser();
+        break;
+      case "4":
+        removeNews();
+        promptUser();
+        break;
+      case "5":
+        rl.close();
+      default:
+        console.log("Invalid option. Try again.");
+        promptUser();
+        break;
+    }
+  })
+}
 
 // Start the application
-function startApp() {}
+function startApp() {
+  console.log("Hello! Today we have interesting news for you.")
+  promptUser()
+}
 
-removeNews()
+startApp()
 console.log()
