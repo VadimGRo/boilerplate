@@ -146,12 +146,12 @@ function removeNews() {
   const objnews = JSON.parse(data);
   rl.question("What news do you want to remove? ID: ", (id) => {
     const news = objnews.find(news => news.id === parseInt(id))
-    if (news) {
-      const updatedNews = objnews.filter(news => news.id !== parseInt(id));
-      saveNews(updatedNews);
-      console.log("News removed successfully.");
+    if (index !== -1) {
+      news.splice(index, 1);
+      saveNews(news);
+      console.log("News article removed.");
     } else {
-      console.error("No article found with that id!");
+      console.log("No article found with that ID.");
     }
   
     rl.question(" 1 - Back to menu \n 2 - Continue here \n 3 - Exit \n Action: ", (answer) => {
