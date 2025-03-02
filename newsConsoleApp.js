@@ -69,9 +69,9 @@ function displayNewsById() {
   const objnews = JSON.parse(data);
   
   rl.question("What news do you want to see?", (id) => {
-    const id1 = parseInt(id - 1) //find news by id
-    if (objnews[id1]) {
-      console.log("Title: " + objnews[id1].title + "\n" + "Content: " + objnews[id1].content);
+    const news = objnews.find(news => news.id === parseInt(id)) //find news by id
+    if (news) {
+      console.log("Title: " + news.title + "\n" + "Content: " + news.content);
     } else {
       console.error("No article found with that id!");
     }
@@ -145,9 +145,14 @@ function removeNews() {
   const data = fs.readFileSync(filePath, "utf8");
   const objnews = JSON.parse(data);
   rl.question("What news do you want to remove? ID: ", (id) => {
-    const id1 = id - 1
-    objnews.splice(id1, 1); // find by id
-    saveNews(objnews);
+    const news = objnews.find(news => news.id === parseInt(id))
+    if (news) {
+      const updatedNews = objnews.filter(news => news.id !== parseInt(id));
+      saveNews(updatedNews);
+      console.log("News removed successfully.");
+    } else {
+      console.error("No article found with that id!");
+    }
   
     rl.question(" 1 - Back to menu \n 2 - Continue here \n 3 - Exit \n Action: ", (answer) => {
       switch(answer){
