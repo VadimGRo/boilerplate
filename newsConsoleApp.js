@@ -145,13 +145,13 @@ function removeNews() {
   const data = fs.readFileSync(filePath, "utf8");
   const objnews = JSON.parse(data);
   rl.question("What news do you want to remove? ID: ", (id) => {
-    const news = objnews.find(news => news.id === parseInt(id))
-    if (index !== -1) {
-      news.splice(index, 1);
-      saveNews(news);
-      console.log("News article removed.");
+    const filteredNews = objnews.filter((news) => news.id !== parseInt(id));
+
+    if (filteredNews.length !== objnews.length) {
+    saveNews(filteredNews); 
+    console.log("News article removed.");
     } else {
-      console.log("No article found with that ID.");
+    console.log("No article found with that ID.");
     }
   
     rl.question(" 1 - Back to menu \n 2 - Continue here \n 3 - Exit \n Action: ", (answer) => {
