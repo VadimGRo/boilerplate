@@ -25,6 +25,23 @@ function loadNews() {
 function saveNews(news) {
   fs.writeFileSync(filePath, JSON.stringify(news, null, 2), "utf8");
 }
+function continueing(){
+  rl.question(" 1 - Back to menu \n 2 - Continue here \n 3 - Exit \n Action: ", (answer) => {
+    switch(answer){
+      case "1":
+        promptUser();
+        break;
+      case "2":
+        displayNews();
+        break;
+      case "3":
+        rl.close();
+        break;
+      default:
+        console.log("Invalid option. Try again.");
+        promptUser();
+    }})
+}
 
 // Display the news articles. If there are no news articles available, display a message saying "No news articles available."
 // The news articles should be displayed in the following format:
@@ -33,28 +50,14 @@ function saveNews(news) {
 // ID: 2 - Title of the news article
 function displayNews() {
     let result = "";
-    const data = fs.readFileSync(filePath, "utf8")
-    const objnews = JSON.parse(data)
+    
+    const objnews = loadNews()
     for (let i = 0; i < objnews.length; i++) {
       result += "ID: " + objnews[i].id + " - " + objnews[i].title + "\n";
     }
     
     console.log(result)
-    rl.question(" 1 - Back to menu \n 2 - Continue here \n 3 - Exit \n Action: ", (answer) => {
-      switch(answer){
-        case "1":
-          promptUser();
-          break;
-        case "2":
-          displayNews();
-          break;
-        case "3":
-          rl.close();
-          break;
-        default:
-          console.log("Invalid option. Try again.");
-          promptUser();
-      }})
+    continueing()
  
 
 }
@@ -65,43 +68,29 @@ function displayNews() {
 // Content: Content of the news article
 function displayNewsById() {
  
-  const data = fs.readFileSync(filePath, "utf8");
-  const objnews = JSON.parse(data);
+  
+  const objnews = loadNews()
   
   rl.question("What news do you want to see?", (id) => {
-    const id1 = parseInt(id)
-    if (objnews[id1]) {
-      console.log("Title: " + objnews[id1].title + "\n" + "Content: " + objnews[id1].content);
+    const news = objnews.find(news => news.id === parseInt(id)) //find news by id
+    if (news) {
+      console.log("Title: " + news.title + "\n" + "Content: " + news.content);
     } else {
       console.error("No article found with that id!");
     }
-    
-  })
-  rl.question(" 1 - Back to menu \n 2 - Continue here \n 3 - Exit \n Action: ", (answer) => {
-    switch(answer){
-      case "1":
-        promptUser();
-        break;
-      case "2":
-        displayNewsById();
-        break;
-      case "3":
-        rl.close();
-        break;
-      default:
-        console.log("Invalid option. Try again.");
-        promptUser();
-    }})
+    continueing()
   
-
-
+})
 }
+
+
+
 // Add a new news article to the list of news articles. The user should be prompted to enter the title and content of the news article.
 // The new article should have an ID that is one greater than the ID of the last article in the list.
 // After adding the news article, save the updated list of news articles to the JSON file and display a message saying "News article added."
 function addNews() {
-  const data = fs.readFileSync(filePath, "utf8");
-  const objnews = JSON.parse(data);
+  
+  const objnews = loadNews()
   rl.question("What title of your news?", (title1) => {
   rl.question("What content of your news?", (content1) => {
   const newObject = {
@@ -113,26 +102,11 @@ function addNews() {
   saveNews(objnews);
   console.log("News article added.");
   
-  
+  continueing()
 });
-  
+
   });
-  rl.question(" 1 - Back to menu \n 2 - Continue here \n 3 - Exit \n Action:", (answer) => {
-    switch(answer){
-      case "1":
-        promptUser();
-        break;
-      case "2":
-        addNews();
-        break;
-      case "3":
-        rl.close();
-        break;
-      default:
-        console.log("Invalid option. Try again.");
-        promptUser();
-    }
-})
+
 }
 
 // Remove a news article from the list of news articles. The user should be prompted to enter the ID of the news article to remove.
@@ -140,31 +114,21 @@ function addNews() {
 // After removing the news article, save the updated list of news articles to the JSON file and display a message saying "News article removed."
 // If no news article is found with the specified ID, display a message saying "No article found with that ID."
 function removeNews() {
-  const data = fs.readFileSync(filePath, "utf8");
-  const objnews = JSON.parse(data);
+  
+  const objnews = loadNews()
   rl.question("What news do you want to remove? ID: ", (id) => {
-    const id1 = id - 1
-    objnews.splice(id1, 1);
-    saveNews(objnews);
-    
-  })
-  rl.question(" 1 - Back to menu \n 2 - Continue here \n 3 - Exit \n Action: ", (answer) => {
-    switch(answer){
-      case "1":
-        promptUser();
-        break;
-      case "2":
-        removeNews();
-        break;
-      case "3":
-        rl.close();
-        break;
-      default:
-        console.log("Invalid option. Try again.");
-        promptUser();
+    const filteredNews = objnews.filter((news) => news.id !== parseInt(id));
+
+    if (filteredNews.length !== objnews.length) {
+    saveNews(filteredNews); 
+    console.log("News article removed.");
+    } else {
+    console.log("No article found with that ID.");
     }
-  }
-  )
+  
+    continueing()
+  })
+
 }
 
 // Prompt the user for an action to perform. The user should be able to view the news articles, add a new news article, remove a news article, or exit the application.
@@ -178,7 +142,7 @@ function promptUser() {
         promptUser();
         break;
       case "2":
-        displayNewsById;
+        displayNewsById();
         promptUser();
         break;
       case "3":
